@@ -109,6 +109,7 @@ const CategoryMenu = ({ setSelectedCategory }: Props) => {
             px: 1.5,
             py: 0.75,
             pb: 0.75,
+            height: "auto",
             borderRadius: "8px",
             bgcolor: isActive ? "secondary.main" : "transparent",
             "&:hover": {
