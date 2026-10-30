@@ -12,6 +12,30 @@
 
 ---
 
+## Screenshots
+
+**Home**
+
+![Trove home](docs/screenshots/home.png)
+
+**Catalog** — search, categories, sale prices, and star ratings
+
+![Trove catalog](docs/screenshots/catalog.png)
+
+**Product details**
+
+![Trove product](docs/screenshots/product.png)
+
+**Cart**
+
+![Trove cart](docs/screenshots/cart.png)
+
+**Login**
+
+![Trove login](docs/screenshots/login.png)
+
+---
+
 ## Authentication (Firebase)
 
 This project uses **real Firebase Authentication**, not a mock or demo login.
