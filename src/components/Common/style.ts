@@ -57,6 +57,21 @@ export const PopularTagContainer: SxProps = {
   boxShadow: "0px 0px 10px rgba(255, 140, 0, 0.6)",
 };
 
+export const DiscountTagContainer: SxProps = {
+  position: "absolute",
+  top: 8,
+  left: 8,
+  zIndex: 3,
+  bgcolor: "error.main",
+  color: "#fff",
+  borderRadius: "8px",
+  px: 1,
+  py: 0.25,
+  fontWeight: 600,
+  fontSize: "0.75rem",
+  lineHeight: 1.4,
+};
+
 export const BottomOverlay: SxProps = {
   position: "absolute",
   borderBottomLeftRadius: "inherit",

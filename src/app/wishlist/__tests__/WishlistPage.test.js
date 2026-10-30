@@ -1,12 +1,23 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
-import WishlistPage from "@/pages/WishlistPage"; // Adjust import if necessary
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+import { fetchProducts } from "@/utils/products";
+
+import WishlistPage from "../page";
+
+jest.mock("@/utils/products", () => ({
+  fetchProducts: jest.fn(),
+}));
 
 describe("WishlistPage", () => {
   const theme = createTheme();
 
-  it("should render", () => {
+  beforeEach(() => {
+    fetchProducts.mockResolvedValue([]);
+  });
+
+  it("should render", async () => {
     render(
       <ThemeProvider theme={theme}>
         <WishlistPage />
@@ -14,5 +25,8 @@ describe("WishlistPage", () => {
     );
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("My Wishlist")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("No Items in Wishlist")).toBeInTheDocument();
+    });
   });
 });

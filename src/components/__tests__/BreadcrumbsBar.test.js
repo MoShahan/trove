@@ -1,5 +1,6 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { render, screen } from "@testing-library/react";
+
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import BreadcrumbsBar from "@/components/Common/BreadcrumbsBar";
 
@@ -42,7 +43,6 @@ describe("BreadcrumbsBar Component", () => {
       </ThemeProvider>
     );
 
-    // Check if Skeleton component is rendered for loading routes
-    expect(screen.getAllByRole("progressbar")).toHaveLength(2); // There should be two skeletons for loading routes
+    expect(document.querySelectorAll(".MuiSkeleton-root")).toHaveLength(2);
   });
 });

@@ -1,18 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { toastMessage } from "@/utils/toast";
+
 import CheckoutFormComponent from "../Cart/CheckoutForm";
 
-jest.mock("react-toastify", () => ({
-  toast: {
-    success: jest.fn(),
-  },
+jest.mock("@/utils/toast", () => ({
+  toastMessage: jest.fn(),
 }));
 
 describe("CheckoutFormComponent", () => {
-  test("renders component", () => {
-    render(<CheckoutFormComponent />);
-  });
-
   let handleClearCart;
   let handleClose;
 
@@ -21,7 +17,18 @@ describe("CheckoutFormComponent", () => {
     handleClose = jest.fn();
   });
 
-  test("change input for all fields and then submit", async () => {
+  test("renders component", () => {
+    render(
+      <CheckoutFormComponent
+        handleClearCart={handleClearCart}
+        handleClose={handleClose}
+      />
+    );
+
+    expect(screen.getByText("Payment Information Form")).toBeInTheDocument();
+  });
+
+  test("change input for all fields and then submit", () => {
     render(
       <CheckoutFormComponent
         handleClearCart={handleClearCart}
@@ -30,25 +37,25 @@ describe("CheckoutFormComponent", () => {
     );
 
     fireEvent.change(screen.getByLabelText(/full name/i), {
-      target: { value: "John Doe" },
+      target: { name: "fullName", value: "John Doe" },
     });
     fireEvent.change(screen.getByLabelText(/address/i), {
-      target: { value: "123 Main St" },
+      target: { name: "address", value: "123 Main St" },
     });
     fireEvent.change(screen.getByLabelText(/pin code/i), {
-      target: { value: "12345" },
+      target: { name: "pinCode", value: "12345" },
     });
     fireEvent.change(screen.getByLabelText(/city/i), {
-      target: { value: "New York" },
+      target: { name: "city", value: "New York" },
     });
     fireEvent.change(screen.getByLabelText(/state/i), {
-      target: { value: "NY" },
+      target: { name: "state", value: "NY" },
     });
     fireEvent.change(screen.getByLabelText(/country/i), {
-      target: { value: "USA" },
+      target: { name: "country", value: "USA" },
     });
     fireEvent.change(screen.getByLabelText(/mobile number/i), {
-      target: { value: "9876543210" },
+      target: { name: "mobileNumber", value: "9876543210" },
     });
 
     expect(screen.getByLabelText(/full name/i).value).toBe("John Doe");
@@ -59,8 +66,11 @@ describe("CheckoutFormComponent", () => {
     expect(screen.getByLabelText(/country/i).value).toBe("USA");
     expect(screen.getByLabelText(/mobile number/i).value).toBe("9876543210");
 
-    const submitBtn = screen.getByTestId("submit-btn");
-    fireEvent.submit(submitBtn);
+    fireEvent.submit(screen.getByTestId("submit-btn").closest("form"));
+
+    expect(handleClearCart).toHaveBeenCalledWith(true);
+    expect(handleClose).toHaveBeenCalled();
+    expect(toastMessage).toHaveBeenCalledWith("success", "Checkout Completed");
   });
 
   test("inputing non-numeric values", () => {
@@ -72,11 +82,11 @@ describe("CheckoutFormComponent", () => {
     );
 
     fireEvent.change(screen.getByLabelText(/pin code/i), {
-      target: { value: "abc" },
+      target: { name: "pinCode", value: "abc" },
     });
 
     fireEvent.change(screen.getByLabelText(/mobile number/i), {
-      target: { value: "xyz" },
+      target: { name: "mobileNumber", value: "xyz" },
     });
 
     expect(screen.getByLabelText(/pin code/i).value).toBe("");

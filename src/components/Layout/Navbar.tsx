@@ -1,4 +1,10 @@
 "use client";
+import React, { useEffect, useState } from "react";
+
+import { signOut } from "firebase/auth";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
 import { PersonOutline } from "@mui/icons-material";
 import {
   Box,
@@ -10,19 +16,16 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { signOut } from "firebase/auth";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 import { removeSession } from "@/actions/auth-action";
 import { firebaseAuth } from "@/lib/firebase/firebase";
-import { NAVLINKS } from "@/utils/constant";
+import { BRAND_NAME, NAVLINKS, STORAGE_KEYS } from "@/utils/constant";
 import { toastMessage } from "@/utils/toast";
 import { NavlinksType } from "@/utils/type";
 
-import { NavbarContainer, NavlinksContainer } from "./style";
 import { LinkStyle } from "../Common/common.style";
+
+import { NavbarContainer, NavlinksContainer } from "./style";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -33,8 +36,8 @@ const Navbar = () => {
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    setIsLoggedIn(!!localStorage?.getItem("agentware-token"));
-  });
+    setIsLoggedIn(!!localStorage?.getItem(STORAGE_KEYS.token));
+  }, [pathname]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -57,7 +60,10 @@ const Navbar = () => {
         setIsLoggedIn(false);
       }
     } catch (err) {
-      toastMessage("error", err as string);
+      toastMessage(
+        "error",
+        err instanceof Error ? err.message : "Failed to log out"
+      );
     } finally {
       setMenuLoader(false);
     }
@@ -76,7 +82,7 @@ const Navbar = () => {
             }}
             fontWeight="800"
           >
-            AGET.CO
+            {BRAND_NAME}
           </Typography>
         </Link>
       </Box>

@@ -1,17 +1,23 @@
-import { LocalFireDepartmentRounded, Favorite } from "@mui/icons-material";
-import { Box, Skeleton, Typography } from "@mui/material";
-import Link from "next/link";
 import React, { useState } from "react";
 
+import Link from "next/link";
+
+import { LocalFireDepartmentRounded, Favorite } from "@mui/icons-material";
+import { Box, Skeleton, Typography } from "@mui/material";
+
+import { formatDiscountLabel } from "@/utils/price";
 import { ProductsCardProps, WishlistButtonProps } from "@/utils/type";
 
 import { LinkStyle, TruncatedText } from "./common.style";
 import ImageWithFallback from "./ImageWithFallback";
+import ProductPrice from "./ProductPrice";
+import ProductRating from "./ProductRating";
 import {
   ProductsCardContainer,
   CardImageContainer,
   WishlistButtonStyle,
   PopularTagContainer,
+  DiscountTagContainer,
   BottomOverlay,
 } from "./style";
 
@@ -40,6 +46,8 @@ export const ProductsCard = ({
             toggleWishlist={toggleWishlist}
             isWishlisted={isWishlisted}
           />
+
+          <DiscountBadge discount={product?.discount} />
 
           {product?.isPopular && (
             <Box sx={PopularTagContainer}>
@@ -83,9 +91,8 @@ export const ProductsCard = ({
           {product?.title}
         </Typography>
 
-        <Typography variant="h3" sx={{ mt: "auto" }}>
-          ${product?.price}
-        </Typography>
+        <ProductRating rating={product?.rating} compact />
+        <ProductPrice price={product?.price} discount={product?.discount} />
       </Box>
     </Link>
   );
@@ -105,6 +112,20 @@ export const ProductsCardSkeleton = () => {
   );
 };
 
+export const DiscountBadge = ({ discount }: { discount?: number | null }) => {
+  const label = formatDiscountLabel(discount);
+
+  if (!label) {
+    return null;
+  }
+
+  return (
+    <Box sx={DiscountTagContainer} data-testid="discount-badge">
+      {label}
+    </Box>
+  );
+};
+
 export const WishlistButton = ({
   id,
   toggleWishlist,
@@ -112,6 +133,7 @@ export const WishlistButton = ({
 }: WishlistButtonProps) => {
   return (
     <Box
+      data-testid="wishlist-button"
       onClick={(e) => toggleWishlist(e, id)}
       sx={{
         ...WishlistButtonStyle,

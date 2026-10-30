@@ -22,6 +22,15 @@ export const NAVLINKS: NavlinksType[] = [
   },
 ];
 
+export const BRAND_NAME = "TROVE";
+export const BRAND_LABEL = "Trove";
+
+export const STORAGE_KEYS = {
+  cart: "trove-cart",
+  token: "trove-token",
+  wishlist: "trove-wishlist",
+} as const;
+
 export const FALLBACK_IMAGE = "/placeholder-3.png";
 
 export const ROOT_ROUTE = "/";

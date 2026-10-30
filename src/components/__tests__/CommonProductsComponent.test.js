@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { ProductsCard, WishlistButton } from "../Common/Products";
 
@@ -9,6 +9,8 @@ const mockProduct = {
   imageUrl: "/test-image.jpg",
   brand: "Test Brand",
   isPopular: true,
+  discount: 10,
+  rating: { rate: 4.5, count: 8 },
 };
 
 const mockHandleWishlist = jest.fn();
@@ -24,7 +26,10 @@ describe("ProductsCard Component", () => {
     );
 
     expect(screen.getByText("Test Product")).toBeInTheDocument();
+    expect(screen.getByText("$89.99")).toBeInTheDocument();
     expect(screen.getByText("$99.99")).toBeInTheDocument();
+    expect(screen.getByTestId("discount-badge")).toHaveTextContent("-10%");
+    expect(screen.getByTestId("product-rating")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /Test Brand/i })).toHaveAttribute(
       "src",
       "/test-image.jpg"
@@ -53,8 +58,7 @@ describe("ProductsCard Component", () => {
       />
     );
 
-    const wishlistButton = screen.getByRole("button");
-    fireEvent.click(wishlistButton);
+    fireEvent.click(screen.getByTestId("wishlist-button"));
     expect(mockHandleWishlist).toHaveBeenCalledWith(1);
   });
 });
@@ -81,8 +85,7 @@ describe("WishlistButton Component", () => {
       />
     );
 
-    const wishlistButton = screen.getByRole("button");
-    fireEvent.click(wishlistButton);
+    fireEvent.click(screen.getByTestId("wishlist-button"));
     expect(mockHandleWishlist).toHaveBeenCalledWith(expect.any(Object), 1);
   });
 });

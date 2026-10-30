@@ -1,3 +1,5 @@
+import React from "react";
+
 import { ArrowCircleDown, ArrowCircleUp, Search } from "@mui/icons-material";
 import {
   Box,
@@ -8,88 +10,79 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 
-import { EachProduct } from "@/utils/type";
-
-import { HeaderContainer, RoundedInputStyle } from "./style";
+import {
+  HeaderContainer,
+  HeaderControls,
+  RoundedInputStyle,
+  SortGroup,
+  SortIconButton,
+} from "./style";
 
 type Props = {
+  isAscending: boolean;
+  onToggleSortOrder: () => void;
   searchWord: string;
   setSearchWord: React.Dispatch<React.SetStateAction<string>>;
-  setModifiedProductsList: React.Dispatch<React.SetStateAction<EachProduct[]>>;
+  setSortBy: React.Dispatch<React.SetStateAction<string>>;
+  sortBy: string;
 };
 
 const Header = ({
+  isAscending,
+  onToggleSortOrder,
   searchWord,
   setSearchWord,
-  setModifiedProductsList,
+  setSortBy,
+  sortBy,
 }: Props) => {
-  const [selectedOption, setSelectedOption] = useState<string>("title");
-  const [isAscending, setIsAscending] = useState<boolean>(true);
-
-  const handleSortOrder = () => {
-    setIsAscending((prev) => !prev);
-  };
-
-  useEffect(() => {
-    setModifiedProductsList((prevProducts) => {
-      const sortedProducts = [...prevProducts].sort((a, b) => {
-        switch (selectedOption) {
-          case "price":
-            return isAscending ? a.price - b.price : b.price - a.price;
-          case "title":
-            return isAscending
-              ? a.title.localeCompare(b.title)
-              : b.title.localeCompare(a.title);
-          default:
-            return 0;
-        }
-      });
-
-      return sortedProducts;
-    });
-  }, [selectedOption, isAscending, setModifiedProductsList]);
-
   return (
     <Box sx={HeaderContainer}>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-        <Typography variant="h1" fontWeight={"bold"}>
-          PRODUCTS
-        </Typography>
+      <Typography
+        variant="h1"
+        fontWeight={700}
+        sx={{ letterSpacing: "0.04em" }}
+      >
+        PRODUCTS
+      </Typography>
 
+      <Box sx={HeaderControls}>
         <TextField
           placeholder="Search..."
+          size="small"
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
-          sx={RoundedInputStyle}
+          sx={{ ...RoundedInputStyle, width: { xs: "100%", sm: 240 } }}
           slotProps={{
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search />
+                  <Search fontSize="small" />
                 </InputAdornment>
               ),
             },
           }}
         />
-      </Box>
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Typography variant="subtitle1" color="textSecondary">
-          Sort by
-        </Typography>
-        <Box style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <Box sx={SortGroup}>
+          <Typography variant="subtitle1" color="textSecondary">
+            Sort by
+          </Typography>
           <Select
-            value={selectedOption}
+            size="small"
+            value={sortBy}
             onChange={(e) => {
-              setSelectedOption(e.target.value);
+              setSortBy(e.target.value);
             }}
-            sx={{ ...RoundedInputStyle, minWidth: "150px", border: "none" }}
+            sx={{ ...RoundedInputStyle, minWidth: 128 }}
           >
             <MenuItem value={"title"}>Title</MenuItem>
             <MenuItem value={"price"}>Price</MenuItem>
           </Select>
-          <IconButton onClick={handleSortOrder}>
+          <IconButton
+            onClick={onToggleSortOrder}
+            sx={SortIconButton}
+            aria-label={isAscending ? "Sort descending" : "Sort ascending"}
+          >
             {isAscending ? <ArrowCircleDown /> : <ArrowCircleUp />}
           </IconButton>
         </Box>

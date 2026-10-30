@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: "https://fakestoreapi.in/api",
+  baseURL: "https://dummyjson.com",
 });
 
 export default http;

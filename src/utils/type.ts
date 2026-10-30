@@ -23,7 +23,7 @@ export type EachProduct = {
   brand?: string;
   model?: string;
   color?: string;
-  discount?: 11;
+  discount?: number;
   popular?: boolean;
   isPopular?: boolean;
   imageUrl?: string;

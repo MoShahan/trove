@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
@@ -18,22 +20,21 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
 
-import { EachProduct, ProductsResponse, SortConfigType } from "@/utils/type";
+import { formatPrice } from "@/utils/price";
+import { fetchProducts } from "@/utils/products";
+import { EachProduct, SortConfigType } from "@/utils/type";
 
 const AdminPage = () => {
   const [productsLoading, setProductsLoading] = useState<boolean>(false);
 
   const fetchItems = () => {
     setProductsLoading(true);
-    axios
-      .get("https://fakestoreapi.in/api/products")
-      .then((res: ProductsResponse) => {
-        setProducts(res.data.products);
+    fetchProducts()
+      .then((products) => {
+        setProducts(products);
       })
-      .catch((e: AxiosError) => {
+      .catch((e: Error) => {
         console.log("err", e);
       })
       .finally(() => {
@@ -262,7 +263,7 @@ const AdminPage = () => {
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
                 <TableCell>{product.category}</TableCell>
-                <TableCell>{product.price}</TableCell>
+                <TableCell>{formatPrice(product.price)}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.image}</TableCell>
                 <TableCell>

@@ -6,7 +6,7 @@ const Signup = () => {
   return (
     <>
       <Divider sx={{ mx: 4 }} />
-      <AuthPage type="signup" />;
+      <AuthPage type="signup" />
     </>
   );
 };

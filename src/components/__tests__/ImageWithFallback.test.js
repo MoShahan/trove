@@ -1,9 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-
-import ImageWithFallback from "../Common/ImageWithFallback";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { FALLBACK_IMAGE } from "@/utils/constant";
+
+import ImageWithFallback from "../Common/ImageWithFallback";
 
 describe("ImageWithFallback Component", () => {
   test("renders image with given props", () => {
@@ -20,7 +19,7 @@ describe("ImageWithFallback Component", () => {
     expect(imageElement).toHaveAttribute("src", "/test-image.jpg");
   });
 
-  test("uses fallback image on error", async () => {
+  test("uses fallback image on error", () => {
     render(
       <ImageWithFallback
         alt="Fallback Test"
@@ -32,9 +31,11 @@ describe("ImageWithFallback Component", () => {
     const imageElement = screen.getByRole("img", { name: /fallback test/i });
     expect(imageElement).toHaveAttribute("src", "/broken-image.jpg");
 
-    await userEvent.click(imageElement);
-    imageElement.dispatchEvent(new Event("error"));
+    fireEvent.error(imageElement);
 
-    expect(imageElement).toHaveAttribute("src", FALLBACK_IMAGE);
+    expect(screen.getByRole("img", { name: /fallback test/i })).toHaveAttribute(
+      "src",
+      FALLBACK_IMAGE
+    );
   });
 });

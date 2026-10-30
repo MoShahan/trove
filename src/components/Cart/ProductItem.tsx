@@ -1,13 +1,16 @@
+import React from "react";
+
 import { Delete } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
-import React from "react";
 
 import { ProductItemProps } from "@/utils/type";
 
-import QuantityComponent from "./Quantity";
-import { ImageCard } from "./style";
 import { TruncatedText } from "../Common/common.style";
 import ImageWithFallback from "../Common/ImageWithFallback";
+import ProductPrice from "../Common/ProductPrice";
+
+import QuantityComponent from "./Quantity";
+import { ImageCard } from "./style";
 
 const ProductItem = ({
   product,
@@ -69,7 +72,11 @@ const ProductItem = ({
             gap: 2,
           }}
         >
-          <Typography variant="h2">${product?.price}</Typography>
+          <ProductPrice
+            price={product?.price}
+            discount={product?.discount}
+            saleVariant="h2"
+          />
           <QuantityComponent
             quantity={product?.quantity}
             handleDecrease={() => handleQuantityChange(product.id, "decrease")}

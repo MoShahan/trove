@@ -1,7 +1,8 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { render, screen } from "@testing-library/react";
 
-import CartPage from "../CartPage";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+import CartPage from "../page";
 
 describe("CartPage", () => {
   const theme = createTheme();
@@ -14,5 +15,6 @@ describe("CartPage", () => {
     );
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("My Cart")).toBeInTheDocument();
+    expect(screen.getByText("No Items in Cart")).toBeInTheDocument();
   });
 });

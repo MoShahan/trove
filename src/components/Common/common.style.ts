@@ -17,7 +17,7 @@ export const TruncatedText: SxProps = {
 
 export const ProductsWrapper: SxProps = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill , minmax(250px , 1fr))",
-  columnGap: "50px",
-  rowGap: "40px",
+  gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
+  columnGap: { xs: 3, md: 4 },
+  rowGap: { xs: 4, md: 5 },
 };

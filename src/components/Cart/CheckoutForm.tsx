@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import {
   Typography,
   TextField,
@@ -9,7 +11,6 @@ import {
   Box,
   SelectChangeEvent,
 } from "@mui/material";
-import React, { useState } from "react";
 
 import { toastMessage } from "@/utils/toast";
 import { CheckoutFormProps, FormDataType } from "@/utils/type";
@@ -147,7 +148,13 @@ const CheckoutFormComponent = ({
           </Select>
         </FormControl>
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          data-testid="submit-btn"
+        >
           Submit
         </Button>
       </form>

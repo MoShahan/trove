@@ -1,6 +1,7 @@
 "use client";
-import { createTheme } from "@mui/material/styles";
 import { League_Spartan } from "next/font/google";
+
+import { createTheme } from "@mui/material/styles";
 
 const leagueSpartan = League_Spartan({
   weight: ["400", "500", "600", "700"],

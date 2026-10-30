@@ -1,19 +1,28 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import axios from "axios";
+
+import { fetchProducts } from "@/utils/products";
 
 import AdminPage from "../page";
 
-jest.mock("axios");
+jest.mock("@/utils/products", () => ({
+  fetchProducts: jest.fn(),
+}));
 
 describe("Admin Page Tests", () => {
+  beforeEach(() => {
+    fetchProducts.mockResolvedValue([]);
+  });
+
   test("API resolved", async () => {
-    axios.get.mockResolvedValue({});
+    fetchProducts.mockResolvedValue([]);
     render(<AdminPage />);
+    expect(await screen.findByText("Admin Page")).toBeInTheDocument();
   });
 
   test("API rejected", async () => {
-    axios.get.mockRejectedValue({});
+    fetchProducts.mockRejectedValue(new Error("failed"));
     render(<AdminPage />);
+    expect(await screen.findByText("Admin Page")).toBeInTheDocument();
   });
 
   describe("Sorting Tests", () => {
@@ -63,9 +72,9 @@ describe("Admin Page Tests", () => {
     });
 
     test("opens modal with pre-filled product data when 'Edit' is clicked", async () => {
-      axios.get.mockResolvedValueOnce({
-        data: { products: [{ id: 1, title: "Product 1" }] },
-      });
+      fetchProducts.mockResolvedValueOnce([
+        { id: 1, title: "Product 1", price: 10 },
+      ]);
       render(<AdminPage />);
       await waitFor(() => screen.getAllByTestId("menu-button"));
       const menuBtn = screen.getAllByTestId("menu-button");
@@ -131,9 +140,9 @@ describe("Admin Page Tests", () => {
   });
 
   test("removes product when 'Remove' is clicked", async () => {
-    axios.get.mockResolvedValueOnce({
-      data: { products: [{ id: 1, title: "Product 1" }] },
-    });
+    fetchProducts.mockResolvedValueOnce([
+      { id: 1, title: "Product 1", price: 10 },
+    ]);
     render(<AdminPage />);
     await waitFor(() => screen.getAllByTestId("menu-button"));
     const menuBtn = screen.getAllByTestId("menu-button");

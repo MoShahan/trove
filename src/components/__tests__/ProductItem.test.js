@@ -1,5 +1,6 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { render } from "@testing-library/react";
+
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import ProductItem from "@/components/Cart/ProductItem";
 const handleQuantityChange = jest.fn();

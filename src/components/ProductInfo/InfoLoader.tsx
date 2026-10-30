@@ -1,9 +1,13 @@
-import { Box, Skeleton } from "@mui/material";
 import React from "react";
+
+import { Box, Skeleton } from "@mui/material";
 
 const InfoLoader = () => {
   return (
-    <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+    <Box
+      data-testid="info-loader"
+      sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}
+    >
       <Skeleton
         variant="rectangular"
         width={400}

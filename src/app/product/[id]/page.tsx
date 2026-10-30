@@ -1,6 +1,7 @@
 "use client";
-import { Box } from "@mui/material";
 import { useState } from "react";
+
+import { Box } from "@mui/material";
 
 import BreadcrumbsBar from "@/components/Common/BreadcrumbsBar";
 import ProductInfo from "@/components/ProductInfo/ProductInfo";

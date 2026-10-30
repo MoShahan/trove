@@ -1,6 +1,8 @@
-import { Breadcrumbs, Skeleton, Typography } from "@mui/material";
-import Link from "next/link";
 import React from "react";
+
+import Link from "next/link";
+
+import { Breadcrumbs, Skeleton, Typography } from "@mui/material";
 
 import { RouteType } from "@/utils/type";
 

@@ -1,26 +1,86 @@
 "use client";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Container,
-  CircularProgress,
-} from "@mui/material";
+
+import React, { useState } from "react";
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { createSession } from "@/actions/auth-action";
 import { firebaseAuth } from "@/lib/firebase/firebase";
+import { getErrorMessage } from "@/utils/auth";
+import { STORAGE_KEYS } from "@/utils/constant";
 import { toastMessage } from "@/utils/toast";
 
-import { AuthContainer, AuthBox } from "./style";
 import { LinkStyle } from "../Common/common.style";
+
+import { AuthBox, AuthContainer } from "./style";
+
+const PasswordField = ({
+  name,
+  label,
+  value,
+  onChange,
+  error,
+  helperText,
+}: {
+  name: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error: boolean;
+  helperText: string;
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <TextField
+      fullWidth
+      label={label}
+      type={visible ? "text" : "password"}
+      variant="outlined"
+      name={name}
+      value={value}
+      onChange={onChange}
+      margin="normal"
+      error={error}
+      helperText={helperText}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={visible ? "Hide password" : "Show password"}
+                data-testid={`${name}-visibility-toggle`}
+                onClick={() => setVisible((prev) => !prev)}
+                onMouseDown={(event) => event.preventDefault()}
+                edge="end"
+                type="button"
+              >
+                {visible ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  );
+};
 
 const AuthPage = ({ type }: { type: "login" | "signup" }) => {
   const router = useRouter();
@@ -40,6 +100,15 @@ const AuthPage = ({ type }: { type: "login" | "signup" }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const completeLogin = async (token: string, message: string) => {
+    const isAuthenticated = await createSession(token);
+    if (isAuthenticated) {
+      localStorage.setItem(STORAGE_KEYS.token, token);
+      router.push("/");
+      toastMessage("success", message);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,25 +140,22 @@ const AuthPage = ({ type }: { type: "login" | "signup" }) => {
             formData.password
           );
           if (res.user) {
-            const token = await res.user?.getIdToken();
-            const isAuthenticated = await createSession(token);
-            if (isAuthenticated) {
-              localStorage.setItem("agentware-token", token);
-              router.push("/");
-              toastMessage("success", "Logged in successfully");
-            }
+            const token = await res.user.getIdToken();
+            await completeLogin(token, "Logged in successfully");
           }
         } else {
-          await createUserWithEmailAndPassword(
+          const res = await createUserWithEmailAndPassword(
             firebaseAuth,
             formData.email,
             formData.password
           );
-          setFormData({ email: "", password: "", confirmPassword: "" });
-          toastMessage("success", "Account created successfully");
+          if (res.user) {
+            const token = await res.user.getIdToken();
+            await completeLogin(token, "Account created successfully");
+          }
         }
       } catch (err) {
-        toastMessage("error", err.message);
+        toastMessage("error", getErrorMessage(err, "Authentication failed"));
       } finally {
         setLoading(false);
       }
@@ -102,7 +168,11 @@ const AuthPage = ({ type }: { type: "login" | "signup" }) => {
         <Typography variant="h4" fontWeight={600} gutterBottom>
           {type === "login" ? "Welcome Back!" : "Create an Account"}
         </Typography>
-        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: "100%" }}
+          data-testid="auth-form"
+        >
           <TextField
             fullWidth
             type="email"
@@ -115,28 +185,20 @@ const AuthPage = ({ type }: { type: "login" | "signup" }) => {
             error={!!errors.email}
             helperText={errors.email}
           />
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            variant="outlined"
+          <PasswordField
             name="password"
+            label="Password"
             value={formData.password}
             onChange={handleChange}
-            margin="normal"
             error={!!errors.password}
             helperText={errors.password}
           />
           {type === "signup" && (
-            <TextField
-              fullWidth
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
+            <PasswordField
               name="confirmPassword"
+              label="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              margin="normal"
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
             />

@@ -1,14 +1,15 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
-import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
+
+import { Box, Typography } from "@mui/material";
 
 import {
   ProductsCard,
   ProductsCardSkeleton,
 } from "@/components/Common/Products";
-import http from "@/utils/http";
+import { STORAGE_KEYS } from "@/utils/constant";
+import { fetchProducts } from "@/utils/products";
 import { EachProduct } from "@/utils/type";
 
 import { ProductsWrapper } from "../Common/common.style";
@@ -22,7 +23,7 @@ const Products = () => {
 
     setFavProducts(filteredProducts);
     localStorage.setItem(
-      "agetware-wishlist",
+      STORAGE_KEYS.wishlist,
       JSON.stringify(filteredProducts.map((item) => item?.id))
     );
   };
@@ -31,30 +32,13 @@ const Products = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res: AxiosResponse = await http.get("/products");
-
-        const favArray = [];
-
-        Object.values(res.data?.products).forEach((product: EachProduct) => {
-          if (
-            JSON.parse(
-              localStorage?.getItem("agetware-wishlist") || "[]"
-            ).includes(product?.id)
-          ) {
-            favArray.push(product);
-          }
-        });
-
-        const formattedData = favArray.map((product: EachProduct) => ({
-          id: product?.id,
-          title: product?.title,
-          imageUrl: product?.image,
-          price: product?.price,
-          brand: product?.brand,
-          model: product?.model,
-          discount: product?.discount,
-          isPopular: product?.popular,
-        }));
+        const products = await fetchProducts();
+        const wishlistIds = JSON.parse(
+          localStorage?.getItem(STORAGE_KEYS.wishlist) || "[]"
+        );
+        const formattedData = products.filter((product) =>
+          wishlistIds.includes(product?.id)
+        );
 
         setFavProducts(formattedData);
         setLoading(false);

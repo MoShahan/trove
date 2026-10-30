@@ -1,5 +1,6 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 
+import { formatPrice } from "@/utils/price";
 import { OrderSummaryProps } from "@/utils/type";
 
 import { BorderedContainer } from "./style";
@@ -31,7 +32,7 @@ const OrderSummary = ({
         <Typography fontWeight={500} variant="h3" color="textSecondary">
           Subtotal
         </Typography>
-        <Typography variant="h3">${totalAmount.toFixed(2)}</Typography>
+        <Typography variant="h3">{formatPrice(totalAmount)}</Typography>
       </Box>
       <Box
         sx={{
@@ -44,7 +45,7 @@ const OrderSummary = ({
         <Typography variant="h3" fontWeight={500} color="textSecondary">
           Shipping
         </Typography>
-        <Typography variant="h3">$15</Typography>
+        <Typography variant="h3">{formatPrice(15)}</Typography>
       </Box>
       <Box
         sx={{
@@ -57,7 +58,7 @@ const OrderSummary = ({
         <Typography variant="h3" fontWeight={500} color="textSecondary">
           Tax
         </Typography>
-        <Typography variant="h3">$5</Typography>
+        <Typography variant="h3">{formatPrice(5)}</Typography>
       </Box>
       <Divider
         sx={{
@@ -78,7 +79,7 @@ const OrderSummary = ({
       >
         <Typography variant="h3">Total</Typography>
         <Typography variant="h2">
-          ${(totalAmount + 15 + 5).toFixed(2)}
+          {formatPrice(totalAmount + 15 + 5)}
         </Typography>
       </Box>
 

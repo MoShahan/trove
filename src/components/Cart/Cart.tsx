@@ -1,4 +1,6 @@
 "use client";
+import React, { useEffect, useState } from "react";
+
 import {
   Box,
   Button,
@@ -7,10 +9,11 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 
 import CheckoutFormComponent from "@/components/Cart/CheckoutForm";
 import ProductItem from "@/components/Cart/ProductItem";
+import { STORAGE_KEYS } from "@/utils/constant";
+import { getSalePrice } from "@/utils/price";
 import { toastMessage } from "@/utils/toast";
 import { CartProduct, CartType } from "@/utils/type";
 
@@ -31,12 +34,15 @@ const Cart = () => {
 
   const fetchCart = () => {
     const cart: Record<string, CartProduct> = JSON.parse(
-      localStorage.getItem("agentware-cart") || "{}"
+      localStorage.getItem(STORAGE_KEYS.cart) || "{}"
     );
     setCartItems(Object.values(cart));
     const amount = Object.values(cart).reduce(
       (acc: number, curr: CartProduct) => {
-        return acc + (curr?.quantity || 1) * (curr?.price || 0);
+        return (
+          acc +
+          (curr?.quantity || 1) * getSalePrice(curr?.price, curr?.discount)
+        );
       },
       0
     );
@@ -44,7 +50,7 @@ const Cart = () => {
   };
 
   const handleClearCart = (fromCheckout: boolean) => {
-    localStorage.setItem("agentware-cart", "{}");
+    localStorage.setItem(STORAGE_KEYS.cart, "{}");
     setCartItems([]);
     setTotalAmount(0);
     if (!fromCheckout) {
@@ -61,23 +67,23 @@ const Cart = () => {
     action: "increase" | "decrease"
   ) => {
     const cart: Record<string, CartProduct> = JSON.parse(
-      localStorage.getItem("agentware-cart") || "{}"
+      localStorage.getItem(STORAGE_KEYS.cart) || "{}"
     );
     if (action === "decrease" && cart[id].quantity > 1) {
       cart[id].quantity -= 1;
     } else if (action === "increase") {
       cart[id].quantity += 1;
     }
-    localStorage.setItem("agentware-cart", JSON.stringify(cart));
+    localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(cart));
     fetchCart();
   };
 
   const handleDelete = (id: number) => {
     const cart: Record<string, CartProduct> = JSON.parse(
-      localStorage.getItem("agentware-cart") || "{}"
+      localStorage.getItem(STORAGE_KEYS.cart) || "{}"
     );
     delete cart[id];
-    localStorage.setItem("agentware-cart", JSON.stringify(cart));
+    localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(cart));
     fetchCart();
   };
 

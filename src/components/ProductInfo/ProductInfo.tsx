@@ -1,18 +1,23 @@
-import { Add, Remove } from "@mui/icons-material";
-import { Box, Button, Chip, Divider, Typography } from "@mui/material";
-import { AxiosResponse } from "axios";
-import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import http from "@/utils/http";
+import { useParams } from "next/navigation";
+
+import { Add, Remove } from "@mui/icons-material";
+import { Box, Button, Chip, Divider, Typography } from "@mui/material";
+
+import { STORAGE_KEYS } from "@/utils/constant";
+import { fetchProductById } from "@/utils/products";
 import { toastMessage } from "@/utils/toast";
 import { EachProduct } from "@/utils/type";
 
-import InfoLoader from "./InfoLoader";
-import { ButtonContainer, DetailsContainer, ImageCard } from "./style";
 import { FireGlowChip } from "../Common/CustomChip";
 import ImageWithFallback from "../Common/ImageWithFallback";
-import { WishlistButton } from "../Common/Products";
+import ProductPrice from "../Common/ProductPrice";
+import ProductRating from "../Common/ProductRating";
+import { DiscountBadge, WishlistButton } from "../Common/Products";
+
+import InfoLoader from "./InfoLoader";
+import { ButtonContainer, DetailsContainer, ImageCard } from "./style";
 
 const ProductInfo = ({ setRoutes }) => {
   const { id } = useParams();
@@ -29,18 +34,18 @@ const ProductInfo = ({ setRoutes }) => {
       try {
         setLoading(true);
 
-        const res: AxiosResponse = await http.get(`/products/${id}`);
-        setProductDetails(res.data?.product);
+        const product = await fetchProductById(String(id));
+        setProductDetails(product);
         setIsWishlisted(
           JSON.parse(
-            localStorage?.getItem("agetware-wishlist") || "[]"
-          ).includes(res.data?.product?.id)
+            localStorage?.getItem(STORAGE_KEYS.wishlist) || "[]"
+          ).includes(product?.id)
         );
         setRoutes([
           { label: "Home", path: "/" },
           { label: "Product", path: `/#products` },
           {
-            label: res.data?.product?.category,
+            label: product?.category,
             path: `/#products`,
             isActive: true,
             loading: false,
@@ -49,7 +54,10 @@ const ProductInfo = ({ setRoutes }) => {
 
         setLoading(false);
       } catch (err) {
-        toastMessage("error", err as string);
+        toastMessage(
+          "error",
+          err instanceof Error ? err.message : "Failed to load product"
+        );
         setLoading(false);
       }
     };
@@ -57,14 +65,16 @@ const ProductInfo = ({ setRoutes }) => {
   }, [setLoading, id, setRoutes]);
 
   const handleAdd = () => {
-    const cartData = JSON.parse(localStorage.getItem("agentware-cart") || "{}");
+    const cartData = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.cart) || "{}"
+    );
     if (cartData[productDetails?.id]) {
       cartData[productDetails?.id].quantity =
         (cartData[productDetails?.id]?.quantity || 0) + count;
     } else {
       cartData[productDetails?.id] = { ...productDetails, quantity: count };
     }
-    localStorage.setItem("agentware-cart", JSON.stringify(cartData));
+    localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(cartData));
     toastMessage("success", "Added to Cart");
   };
 
@@ -81,18 +91,18 @@ const ProductInfo = ({ setRoutes }) => {
   const toggleWishlist = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     const wishlist = JSON.parse(
-      localStorage?.getItem("agetware-wishlist") || "[]"
+      localStorage?.getItem(STORAGE_KEYS.wishlist) || "[]"
     );
 
     if (wishlist.includes(id)) {
       localStorage.setItem(
-        "agetware-wishlist",
+        STORAGE_KEYS.wishlist,
         JSON.stringify(wishlist.filter((idx: number) => idx != id))
       );
       setIsWishlisted(false);
     } else {
       localStorage.setItem(
-        "agetware-wishlist",
+        STORAGE_KEYS.wishlist,
         JSON.stringify([...wishlist, id])
       );
       setIsWishlisted(true);
@@ -110,6 +120,7 @@ const ProductInfo = ({ setRoutes }) => {
           width={400}
           height={400}
         />
+        <DiscountBadge discount={productDetails?.discount} />
         <WishlistButton
           id={productDetails?.id}
           toggleWishlist={toggleWishlist}
@@ -121,13 +132,19 @@ const ProductInfo = ({ setRoutes }) => {
           {productDetails?.title}
         </Typography>
 
-        <Box sx={{ display: "flex", mb: 2, gap: 1 }}>
+        <Box sx={{ display: "flex", mb: 2, gap: 1, flexWrap: "wrap" }}>
           <Chip
             label={productDetails?.category}
             sx={{ textTransform: "capitalize", fontSize: "1rem" }}
           />
           {productDetails?.popular && <FireGlowChip label="Popular" />}
         </Box>
+
+        <ProductRating
+          rating={productDetails?.rating}
+          showCount
+          size="medium"
+        />
 
         <Divider sx={{ my: 2 }} />
 
@@ -139,9 +156,13 @@ const ProductInfo = ({ setRoutes }) => {
           {productDetails?.description}
         </Typography>
 
-        <Typography variant="h1" sx={{ my: 2 }}>
-          ${productDetails?.price}
-        </Typography>
+        <Box sx={{ my: 2 }}>
+          <ProductPrice
+            price={productDetails?.price}
+            discount={productDetails?.discount}
+            saleVariant="h1"
+          />
+        </Box>
 
         <Typography variant="h5">Brand</Typography>
         <Divider sx={{ width: "15ch", mt: 0.5, mb: 1 }} />

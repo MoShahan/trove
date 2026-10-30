@@ -1,58 +1,111 @@
-# E-Commerce App with Next.js
+# Trove
 
-# Live Link - https://agetware-ecommerce.vercel.app/
+[![CI](https://github.com/MoShahan/agetware-ecommerce/actions/workflows/ci.yml/badge.svg)](https://github.com/MoShahan/agetware-ecommerce/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![MUI](https://img.shields.io/badge/MUI-6-007FFF?logo=mui&logoColor=white)](https://mui.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-This is a fully functional e-commerce web application built using Next.js, Material UI (MUI), Firebase Authentication, and other modern web technologies. The app allows users to browse products, add them to their cart, checkout, and even manage products in the admin panel.
+**Trove** is an e-commerce storefront for browsing products, saving a wishlist, managing a cart, and checking out. Built with **Next.js App Router**, **Material UI**, and **Firebase Authentication**. Catalog data comes from [DummyJSON](https://dummyjson.com/).
+
+**Live app:** [https://trove-shop.vercel.app](https://trove-shop.vercel.app/)
+
+---
+
+## Authentication (Firebase)
+
+This project uses **real Firebase Authentication**, not a mock or demo login.
+
+- **Provider:** Firebase Email/Password
+- **Client:** `firebase/auth` via `src/lib/firebase/firebase.ts`
+- **Project ID:** `agetware-e-commerce` in `src/lib/firebase/config.ts` (this is the Firebase backend name and must stay as-is for login to work)
+- **Session:** after a successful Firebase sign-in, the ID token is stored in an HTTP-only `user_session` cookie
+- **Route protection:** `middleware.ts` verifies that token with the Firebase Identity Toolkit before allowing access to the store
+- **Sign up:** `/sign-up` creates a real Firebase user with `createUserWithEmailAndPassword`
+- **Login:** `/login` signs in with `signInWithEmailAndPassword`
+- **Logout:** Navbar signs out of Firebase and clears the session cookie
+
+Create an account on `/sign-up`, then use those same credentials on `/login`.
+
+---
 
 ## Features
 
-- **Product Listing**: View a list of products with price and rating on the homepage.
-- **Product Details**: View detailed information about a product, select quantity, and add it to your cart.
-- **Shopping Cart**: View all added products, check the total amount, and proceed to checkout.
-- **Admin Panel**: Manage products (add, edit, delete) through a simple table interface.
-- **Authentication**: Secure login and signup using Firebase Authentication.
-- **Mobile Responsive Design**: The app is fully responsive and optimized for mobile devices.
-- **Toast Messages**: Instant notifications for user actions (e.g., product added to cart, successful login).
-- **Test Cases**: Unit and integration test cases to ensure the reliability of the application.
+- **Firebase Auth** for signup, login, logout, and protected routes
+- **Product catalog** with category filters, search, and title/price sorting
+- **Product details** with quantity selection, wishlist toggle, and add-to-cart
+- **Cart** with quantity updates, order summary, and checkout form
+- **Wishlist** persisted in `localStorage`
+- **Admin table** for client-side add/edit/remove/sort of products
+- **Toast notifications** for cart, auth, and checkout actions
+- **Responsive MUI layout** for mobile and desktop
 
-## Technologies Used
+---
 
-- **Next.js**: React framework for building server-side rendered applications.
-- **Material UI**: A React UI framework to create a modern and responsive design.
-- **Firebase Authentication**: Authentication service for secure login and signup functionality.
-- **React Testing Library / Jest**: For writing and running test cases.
+## Tech stack
 
-## Pages
+| Layer     | Tools                                              |
+| --------- | -------------------------------------------------- |
+| Framework | Next.js 15, React 19, TypeScript                   |
+| UI        | Material UI 6, Emotion                             |
+| Auth      | Firebase Authentication (Email/Password)           |
+| Session   | HTTP-only cookie + Firebase ID token verification  |
+| Data      | DummyJSON via Axios                                |
+| State     | React state + `localStorage` for cart and wishlist |
+| Tests     | Jest, React Testing Library                        |
+| Quality   | ESLint (import order/groups), Prettier, Husky      |
 
-- **Root (`/`)**: Displays a list of products with price and rating.
-- **Product Detail (`/product/[id]`)**: Shows detailed product information where users can select quantity and add the item to their cart.
-- **Cart (`/cart`)**: Shows all products added to the cart, displays the total amount, and has a checkout button.
-- **Admin (`/admin`)**: Allows admins to view, add, edit, or delete products.
+---
 
-## Installation
+## Project structure
 
-To get started with this project, follow the steps below:
-
-### 1. Clone the repository
-
+```text
+src/
+  actions/          Server actions for Firebase session cookies
+  app/              App Router pages (home, product, cart, wishlist, auth, admin)
+  components/       UI for catalog, cart, auth, layout
+  lib/firebase/     Firebase app config and Auth client
+  utils/            HTTP client, token verification, theme, types
+middleware.ts       Firebase token checks for protected routes
 ```
-git clone https://github.com/MoShahan/agetware-e-commerce.git
-cd agetware-e-commerce
-```
 
-### 2. Install dependencies
+### Routes
 
-```
+| Route           | Description                    |
+| --------------- | ------------------------------ |
+| `/login`        | Firebase Email/Password login  |
+| `/sign-up`      | Create a Firebase Auth account |
+| `/`             | Banner + product grid          |
+| `/product/[id]` | Product details                |
+| `/cart`         | Cart, totals, checkout dialog  |
+| `/wishlist`     | Saved products                 |
+| `/admin`        | Product admin table            |
+
+---
+
+## Getting started
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/MoShahan/agetware-ecommerce.git
+cd agetware-ecommerce
 npm install
 ```
 
-### 3. Set up Firebase
+### 2. Firebase
 
-- Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
-- Enable **Email/Password Authentication** in Firebase Authentication settings.
-- Obtain your Firebase config keys and add them to a `.env.local` file in the root of the project:
+Firebase is already integrated. Auth still uses the existing `agetware-e-commerce` Firebase project in `src/lib/firebase/config.ts`, with Email/Password enabled. Changing that project ID would break sign-in.
 
-```
+To use your own Firebase project instead:
+
+1. Create a project at the [Firebase Console](https://console.firebase.google.com/).
+2. Enable **Email/Password** under Authentication.
+3. Replace the values in `src/lib/firebase/config.ts` (and the API key used in `src/utils/firebase.ts`).
+
+You can also load config from `.env.local` if you prefer not to keep keys in source:
+
+```env
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
@@ -61,48 +114,68 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
 NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 ```
 
-### 4. Run the app
+### 3. Run the app
 
-Start the development server:
-
-```
+```bash
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000), create an account on `/sign-up`, then sign in on `/login`.
 
-## Admin Panel Usage
+---
 
-1. Go to `/admin` after logging in with an admin account.
-2. You will see a table of all products with options to:
-   - **Add** a new product.
-   - **Edit** existing products.
-   - **Delete** a product.
+## Scripts
 
-## Authentication
+| Script                  | Purpose                                      |
+| ----------------------- | -------------------------------------------- |
+| `npm run dev`           | Start the Next.js dev server                 |
+| `npm run build`         | Production build                             |
+| `npm start`             | Serve the production build                   |
+| `npm run lint`          | ESLint via `next lint`                       |
+| `npm run lint:fix`      | Auto-fix lint issues, including import order |
+| `npm run format`        | Format files with Prettier                   |
+| `npm run format:check`  | Check Prettier formatting in CI              |
+| `npm test`              | Run Jest tests once                          |
+| `npm run test:watch`    | Jest watch mode                              |
+| `npm run test:coverage` | Jest with coverage                           |
 
-- **Login**: Use Firebase Email/Password authentication to log into the app.
-- **Signup**: Users can register via Firebase authentication.
-- Authentication-related functionalities are present in `/login` and `/signup` pages.
+---
 
-## Testing
+## Testing and quality gates
 
-To run the test cases:
+- **Unit / component tests** live next to pages and under `src/components/__tests__`
+- **CI** (`.github/workflows/ci.yml`) runs lint, Prettier check, and tests on every push and pull request
+- **Pre-commit** uses Husky + lint-staged to run ESLint and Prettier on staged files
 
+```bash
+npm test
+npm run lint
+npm run format:check
 ```
-npm run test
-```
 
-This will run the Jest and React Testing Library test suites to ensure the application behaves as expected.
+### Import order
 
-## Mobile Responsiveness
+ESLint `import/order` groups imports as:
 
-The application is designed to be fully responsive, ensuring that users have an optimal experience across various devices, including mobile phones and tablets. MUI's responsive grid system is utilized to handle layout changes based on screen size.
+1. Built-ins
+2. External packages (`react` first, then other libraries, then `@mui/*`)
+3. Internal aliases (`@/`)
+4. Parent / sibling / index
+5. Type imports
 
-## Toast Notifications
+---
 
-Toast messages are displayed for:
+## App data
 
-- Adding a product to the cart.
-- Successful login/signup.
-- Any error messages or actions that require user attention.
+- **Auth** is Firebase Email/Password with verified ID tokens
+- **Catalog** is fetched from DummyJSON (`https://dummyjson.com`)
+- **Cart** is stored in `localStorage` under `trove-cart`
+- **Wishlist** is stored in `localStorage` under `trove-wishlist`
+- **Checkout** collects shipping details and then clears the cart (no payment gateway)
+- **Admin** edits happen in the browser and are not persisted to the API
+
+---
+
+## License
+
+Private.

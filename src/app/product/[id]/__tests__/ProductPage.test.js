@@ -1,7 +1,16 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { render, screen } from "@testing-library/react";
 
-import ProductPage from "../ProductPage"; // Adjust import if necessary
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+import ProductPage from "../page";
+
+jest.mock("next/navigation", () => ({
+  useParams: () => ({ id: "1" }),
+}));
+
+jest.mock("@/utils/products", () => ({
+  fetchProductById: jest.fn(() => new Promise(() => {})),
+}));
 
 describe("ProductPage", () => {
   const theme = createTheme();

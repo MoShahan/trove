@@ -1,6 +1,7 @@
+import React from "react";
+
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
-import React from "react";
 
 import { QuantityComponentProps } from "@/utils/type";
 

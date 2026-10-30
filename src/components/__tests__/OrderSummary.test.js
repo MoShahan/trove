@@ -1,5 +1,6 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { render, screen, fireEvent } from "@testing-library/react";
+
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import OrderSummary from "@/components/Cart/OrderSummary";
 
@@ -31,9 +32,9 @@ describe("OrderSummary Component", () => {
     expect(screen.getByText("Subtotal")).toBeInTheDocument();
     expect(screen.getByText(`$${totalAmount.toFixed(2)}`)).toBeInTheDocument();
     expect(screen.getByText("Shipping")).toBeInTheDocument();
-    expect(screen.getByText("$15")).toBeInTheDocument();
+    expect(screen.getByText("$15.00")).toBeInTheDocument();
     expect(screen.getByText("Tax")).toBeInTheDocument();
-    expect(screen.getByText("$5")).toBeInTheDocument();
+    expect(screen.getByText("$5.00")).toBeInTheDocument();
     expect(screen.getByText("Total")).toBeInTheDocument();
     expect(
       screen.getByText(`$${(totalAmount + 15 + 5).toFixed(2)}`)
