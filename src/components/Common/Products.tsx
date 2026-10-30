@@ -68,7 +68,7 @@ export const ProductsCard = ({
             imageUrl={product?.imageUrl}
           />
 
-          <Box sx={{ ...BottomOverlay, height: hover ? "40%" : "0%" }}>
+          <Box sx={[BottomOverlay, { height: hover ? "40%" : "0%" }]}>
             <Typography
               variant="subtitle1"
               sx={{
@@ -135,12 +135,14 @@ export const WishlistButton = ({
     <Box
       data-testid="wishlist-button"
       onClick={(e) => toggleWishlist(e, id)}
-      sx={{
-        ...WishlistButtonStyle,
-        boxShadow: isWishlisted
-          ? "0px 0px 10px rgba(255, 140, 0, 0.8)"
-          : "0px 0px 8px rgba(255, 255, 255, 0.3)",
-      }}
+      sx={[
+        WishlistButtonStyle,
+        {
+          boxShadow: isWishlisted
+            ? "0px 0px 10px rgba(255, 140, 0, 0.8)"
+            : "0px 0px 8px rgba(255, 255, 255, 0.3)",
+        },
+      ]}
     >
       <Favorite
         fontSize="small"

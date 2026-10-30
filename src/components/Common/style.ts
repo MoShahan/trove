@@ -1,4 +1,5 @@
 import { SxProps } from "@mui/material";
+import { SystemStyleObject, Theme } from "@mui/system";
 
 export const ProductsCardContainer: SxProps = {
   display: "flex",
@@ -26,7 +27,7 @@ export const CardImageContainer: SxProps = {
   },
 };
 
-export const WishlistButtonStyle: SxProps = {
+export const WishlistButtonStyle: SystemStyleObject<Theme> = {
   position: "absolute",
   bottom: "-14px",
   right: 15,
@@ -72,7 +73,7 @@ export const DiscountTagContainer: SxProps = {
   lineHeight: 1.4,
 };
 
-export const BottomOverlay: SxProps = {
+export const BottomOverlay: SystemStyleObject<Theme> = {
   position: "absolute",
   borderBottomLeftRadius: "inherit",
   borderBottomRightRadius: "inherit",

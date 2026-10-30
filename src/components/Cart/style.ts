@@ -1,4 +1,5 @@
 import { SxProps } from "@mui/material";
+import { SystemStyleObject, Theme } from "@mui/system";
 
 export const CartDetailsWrapper: SxProps = {
   display: "flex",
@@ -10,7 +11,7 @@ export const CartDetailsWrapper: SxProps = {
   },
 };
 
-export const BorderedContainer: SxProps = {
+export const BorderedContainer: SystemStyleObject<Theme> = {
   p: {
     xs: "14px",
     md: "20px 24px",

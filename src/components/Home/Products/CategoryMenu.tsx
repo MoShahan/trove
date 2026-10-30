@@ -102,23 +102,21 @@ const CategoryMenu = ({ setSelectedCategory }: Props) => {
       <Box
         key={`${inMenu ? "menu" : "row"}-${category}`}
         onClick={() => handleCategoryClick(category)}
-        sx={{
-          ...CategoryItem,
-          ...(isActive ? CategoryItemActive : {}),
-          ...(inMenu
-            ? {
-                px: 1.5,
-                py: 0.75,
-                pb: 0.75,
-                borderRadius: "8px",
-                bgcolor: isActive ? "secondary.main" : "transparent",
-                "&:hover": {
-                  bgcolor: "secondary.main",
-                  color: "primary.main",
-                },
-              }
-            : {}),
-        }}
+        sx={[
+          CategoryItem,
+          isActive && CategoryItemActive,
+          inMenu && {
+            px: 1.5,
+            py: 0.75,
+            pb: 0.75,
+            borderRadius: "8px",
+            bgcolor: isActive ? "secondary.main" : "transparent",
+            "&:hover": {
+              bgcolor: "secondary.main",
+              color: "primary.main",
+            },
+          },
+        ]}
       >
         <Typography variant="subtitle1" fontWeight="inherit">
           {formatCategoryLabel(category)}

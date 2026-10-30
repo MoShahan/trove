@@ -1,4 +1,5 @@
 import { SxProps } from "@mui/material";
+import { SystemStyleObject, Theme } from "@mui/system";
 
 export const HeaderContainer: SxProps = {
   display: "flex",
@@ -35,7 +36,7 @@ export const SortIconButton: SxProps = {
   },
 };
 
-export const RoundedInputStyle: SxProps = {
+export const RoundedInputStyle: SystemStyleObject<Theme> = {
   height: 40,
   fontSize: "0.975rem",
   bgcolor: "secondary.main",
@@ -107,7 +108,7 @@ export const CategoryScrollButton: SxProps = {
   },
 };
 
-export const CategoryItem: SxProps = {
+export const CategoryItem: SystemStyleObject<Theme> = {
   position: "relative",
   flexShrink: 0,
   textTransform: "capitalize",
@@ -121,7 +122,7 @@ export const CategoryItem: SxProps = {
   },
 };
 
-export const CategoryItemActive: SxProps = {
+export const CategoryItemActive: SystemStyleObject<Theme> = {
   color: "primary.main",
   fontWeight: 600,
 };

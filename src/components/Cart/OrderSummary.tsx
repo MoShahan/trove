@@ -12,11 +12,13 @@ const OrderSummary = ({
 }: OrderSummaryProps) => {
   return (
     <Box
-      sx={{
-        ...BorderedContainer,
-        flex: 1,
-        alignSelf: "flex-start",
-      }}
+      sx={[
+        BorderedContainer,
+        {
+          flex: 1,
+          alignSelf: "flex-start",
+        },
+      ]}
     >
       <Typography variant="h2" sx={{ mb: 4 }}>
         Order Summary

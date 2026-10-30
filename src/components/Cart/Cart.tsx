@@ -92,13 +92,15 @@ const Cart = () => {
       {cartItems?.length ? (
         <Box sx={CartDetailsWrapper}>
           <Box
-            sx={{
-              ...BorderedContainer,
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-              flex: 1.5,
-            }}
+            sx={[
+              BorderedContainer,
+              {
+                display: "flex",
+                flexDirection: "column",
+                gap: 4,
+                flex: 1.5,
+              },
+            ]}
           >
             {cartItems.map((item: CartProduct) => (
               <ProductItem

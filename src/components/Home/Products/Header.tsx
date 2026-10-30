@@ -52,7 +52,7 @@ const Header = ({
           size="small"
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
-          sx={{ ...RoundedInputStyle, width: { xs: "100%", sm: 240 } }}
+          sx={[RoundedInputStyle, { width: { xs: "100%", sm: 240 } }]}
           slotProps={{
             input: {
               startAdornment: (
@@ -73,7 +73,7 @@ const Header = ({
             onChange={(e) => {
               setSortBy(e.target.value);
             }}
-            sx={{ ...RoundedInputStyle, minWidth: 128 }}
+            sx={[RoundedInputStyle, { minWidth: 128 }]}
           >
             <MenuItem value={"title"}>Title</MenuItem>
             <MenuItem value={"price"}>Price</MenuItem>
