@@ -1,6 +1,6 @@
 # Trove
 
-[![CI](https://github.com/MoShahan/agetware-ecommerce/actions/workflows/ci.yml/badge.svg)](https://github.com/MoShahan/agetware-ecommerce/actions/workflows/ci.yml)
+[![CI](https://github.com/MoShahan/trove/actions/workflows/ci.yml/badge.svg)](https://github.com/MoShahan/trove/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![MUI](https://img.shields.io/badge/MUI-6-007FFF?logo=mui&logoColor=white)](https://mui.com/)
@@ -42,7 +42,7 @@ This project uses **real Firebase Authentication**, not a mock or demo login.
 
 - **Provider:** Firebase Email/Password
 - **Client:** `firebase/auth` via `src/lib/firebase/firebase.ts`
-- **Project ID:** `agetware-e-commerce` in `src/lib/firebase/config.ts` (this is the Firebase backend name and must stay as-is for login to work)
+- **Config:** Firebase project settings live in `src/lib/firebase/config.ts` (keep these values as they are for login to work)
 - **Session:** after a successful Firebase sign-in, the ID token is stored in an HTTP-only `user_session` cookie
 - **Route protection:** `middleware.ts` verifies that token with the Firebase Identity Toolkit before allowing access to the store
 - **Sign up:** `/sign-up` creates a real Firebase user with `createUserWithEmailAndPassword`
@@ -112,14 +112,14 @@ middleware.ts       Firebase token checks for protected routes
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/MoShahan/agetware-ecommerce.git
-cd agetware-ecommerce
+git clone https://github.com/MoShahan/trove.git
+cd trove
 npm install
 ```
 
 ### 2. Firebase
 
-Firebase is already integrated. Auth still uses the existing `agetware-e-commerce` Firebase project in `src/lib/firebase/config.ts`, with Email/Password enabled. Changing that project ID would break sign-in.
+Firebase is already integrated. Auth uses the Firebase project configured in `src/lib/firebase/config.ts`, with Email/Password enabled. Replacing those values without a matching Firebase project would break sign-in.
 
 To use your own Firebase project instead:
 
